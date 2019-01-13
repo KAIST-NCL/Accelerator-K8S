@@ -20,7 +20,7 @@ const (
 	accManagerName = "acc-manager"
 )
 
-type FpgaManager struct {
+type AccManager struct {
 	userListPath string
 	statListPath string
 
@@ -30,7 +30,7 @@ type FpgaManager struct {
 	healthWatcher *fsnotify.Watcher
 }
 
-func initializeFpgaManager() (*FpgaManager,error){
+func initializeAccManager() (*AccManager,error){
 	//TODO : fetch list files from ACC-Manager
 	/*accManagerPath, err := exec.LookPath(accManagerName)
 	if err != nil {
@@ -78,7 +78,7 @@ func initializeFpgaManager() (*FpgaManager,error){
 		return nil, err
 	}
 
-	return &FpgaManager{
+	return &AccManager{
 		userListPath: tmp_user_list_path,
 		statListPath: tmp_stat_list_path,
 
@@ -89,7 +89,7 @@ func initializeFpgaManager() (*FpgaManager,error){
 	},nil
 }
 
-func (m *FpgaManager) getDevices() map[string][]*pb.Device{
+func (m *AccManager) getDevices() map[string][]*pb.Device{
 	statListPath := m.statListPath
 	usrListPath := m.userListPath
 
@@ -139,7 +139,7 @@ func (m *FpgaManager) getDevices() map[string][]*pb.Device{
 	return devices
 }
 
-func (m *FpgaManager) HealthCheck() {
+func (m *AccManager) HealthCheck() {
 	//TODO: Cleanup file watcher
 	//TODO: fix from per dp to overall
 
@@ -164,7 +164,7 @@ func (m *FpgaManager) HealthCheck() {
 	}*/
 }
 
-func (m *FpgaManager) Shutdown(){
+func (m *AccManager) Shutdown(){
 	if m.dpWatcher != nil {
 		m.dpWatcher.Close()
 	}

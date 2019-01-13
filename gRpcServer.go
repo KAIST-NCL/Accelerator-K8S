@@ -49,7 +49,7 @@ func convertDeviceVar(dType string, devices []*pb.Device) []*k8sPluginApi.Device
 	return devs
 }
 
-type FpgaDevicePlugin struct {
+type AccDevicePlugin struct {
 	resName string
 	devs []*k8sPluginApi.Device
 	socket string
@@ -64,19 +64,19 @@ func getSocketAddr(dType string) string {
 	return path.Join(k8sPluginApi.DevicePluginPath,dType)+".sock"
 }
 
-func initializeFpgaDevicePlugins(m *FpgaManager) []*FpgaDevicePlugin {
-	plugins := []*FpgaDevicePlugin{}
+func initializeAccDevicePlugins(m *AccManager) []*AccDevicePlugin {
+	plugins := []*AccDevicePlugin{}
 	devices := m.getDevices()
 	for key,val := range devices{
-		plugins = append(plugins,initializeFpgaDevicePlugin(key,val))
+		plugins = append(plugins,initializeAccDevicePlugin(key,val))
 	}
 
 	return plugins
 }
 
-func initializeFpgaDevicePlugin(dType string, devices []*pb.Device) *FpgaDevicePlugin {
+func initializeAccDevicePlugin(dType string, devices []*pb.Device) *AccDevicePlugin {
 	devs := convertDeviceVar(dType,devices)
-	return &FpgaDevicePlugin{
+	return &AccDevicePlugin{
 		resName: "acc.k8s/"+strings.Trim(strings.ToLower(dType)," "),
 		devs:	devs,
 		socket:	getSocketAddr(dType),
@@ -86,7 +86,7 @@ func initializeFpgaDevicePlugin(dType string, devices []*pb.Device) *FpgaDeviceP
 	}
 }
 
-func (dp *FpgaDevicePlugin) Serve() error {
+func (dp *AccDevicePlugin) Serve() error {
 	if err := dp.StartServer(); err != nil {
 		log.Println("Cannot start gRPC server : "+err.Error())
 		return err
@@ -100,7 +100,7 @@ func (dp *FpgaDevicePlugin) Serve() error {
 	return nil
 }
 
-func (dp *FpgaDevicePlugin) StartServer() error {
+func (dp *AccDevicePlugin) StartServer() error {
 	if err := dp.Cleanup(); err != nil {
 		log.Println("Cannot cleanup server socket : "+err.Error())
 		return err
@@ -125,7 +125,7 @@ func (dp *FpgaDevicePlugin) StartServer() error {
 	return nil
 }
 
-func (dp *FpgaDevicePlugin) StopServer() error {
+func (dp *AccDevicePlugin) StopServer() error {
 	if dp.server != nil {
 		dp.server.Stop()
 		dp.server = nil
@@ -134,14 +134,14 @@ func (dp *FpgaDevicePlugin) StopServer() error {
 	return dp.Cleanup()
 }
 
-func (dp *FpgaDevicePlugin) Cleanup() error {
+func (dp *AccDevicePlugin) Cleanup() error {
 	if err := os.Remove(dp.socket); err != nil && !os.IsNotExist(err){
 		return err
 	}
 	return nil
 }
 
-func (dp *FpgaDevicePlugin) Register() error {
+func (dp *AccDevicePlugin) Register() error {
 	conn, err := dial(k8sPluginApi.KubeletSocket, 5*time.Second)
 	if err != nil {
 		log.Println("Cannot dial kubelet socket : "+err.Error())
@@ -167,11 +167,11 @@ func (dp *FpgaDevicePlugin) Register() error {
 /*
 	Kubernetes Device Plugin Server Implementation
 */
-func (dp *FpgaDevicePlugin) GetDevicePluginOptions(c context.Context, e *k8sPluginApi.Empty) (*k8sPluginApi.DevicePluginOptions, error){
+func (dp *AccDevicePlugin) GetDevicePluginOptions(c context.Context, e *k8sPluginApi.Empty) (*k8sPluginApi.DevicePluginOptions, error){
 	return &k8sPluginApi.DevicePluginOptions{},nil
 }
 
-func (dp *FpgaDevicePlugin) ListAndWatch(e *k8sPluginApi.Empty, s k8sPluginApi.DevicePlugin_ListAndWatchServer) error{
+func (dp *AccDevicePlugin) ListAndWatch(e *k8sPluginApi.Empty, s k8sPluginApi.DevicePlugin_ListAndWatchServer) error{
 	log.Println("List and Watch called for ["+dp.resName+"]")
 	s.Send(&k8sPluginApi.ListAndWatchResponse{Devices: dp.devs})
 	for {
@@ -185,7 +185,7 @@ func (dp *FpgaDevicePlugin) ListAndWatch(e *k8sPluginApi.Empty, s k8sPluginApi.D
 	return nil
 }
 
-func (dp *FpgaDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.AllocateRequest) (*k8sPluginApi.AllocateResponse,error){
+func (dp *AccDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.AllocateRequest) (*k8sPluginApi.AllocateResponse,error){
 	devs := dp.devs
 	resps := k8sPluginApi.AllocateResponse{}
 	for _, req := range reqs.ContainerRequests {
@@ -212,6 +212,6 @@ func (dp *FpgaDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.Alloc
 	return &resps,nil
 }
 
-func (dp *FpgaDevicePlugin) PreStartContainer(c context.Context, req *k8sPluginApi.PreStartContainerRequest) (*k8sPluginApi.PreStartContainerResponse, error){
+func (dp *AccDevicePlugin) PreStartContainer(c context.Context, req *k8sPluginApi.PreStartContainerRequest) (*k8sPluginApi.PreStartContainerResponse, error){
 	return &k8sPluginApi.PreStartContainerResponse{},nil
 }

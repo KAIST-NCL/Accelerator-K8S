@@ -9,7 +9,7 @@ import (
 )
 
 func main(){
-	manager,err := initializeFpgaManager()
+	manager,err := initializeAccManager()
 	if err != nil {
 		log.Println("Cannot initialize manager")
 		os.Exit(1)
@@ -19,7 +19,7 @@ func main(){
 	go manager.HealthCheck()
 
 	restart := true
-	var devicePlugins []*FpgaDevicePlugin
+	var devicePlugins []*AccDevicePlugin
 	for {
 		//Restart all device plugin servers
 		if restart {
@@ -28,7 +28,7 @@ func main(){
 					dp.StopServer()
 				}
 			}
-			devicePlugins = initializeFpgaDevicePlugins(manager)
+			devicePlugins = initializeAccDevicePlugins(manager)
 			for _,dp := range devicePlugins{
 				if err := dp.Serve(); err != nil{
 					log.Println("Cannot serve device plugin servers")
