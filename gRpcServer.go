@@ -34,13 +34,14 @@ func convertDeviceVar(dType string, devices []*pb.Device) []*k8sPluginApi.Device
 	if devices == nil {
 		return nil
 	}
-	for i, elem := range devices{
+	for _, elem := range devices{
 		statusTmp := k8sPluginApi.Healthy
 		if *elem.Status == pb.Device_USED{
 			statusTmp = k8sPluginApi.Unhealthy
 		}
 		dev := &k8sPluginApi.Device{
-			ID: dType+"_"+string(i),
+			//ID: dType+"_"+string(i),
+			ID: dType,
 			Health: statusTmp,
 		}
 		devs = append(devs,dev)
