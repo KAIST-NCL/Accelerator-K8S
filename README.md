@@ -5,7 +5,7 @@ Accelerator-K8S is a device plugin works with [Accelerator-Docker](https://githu
 ## Getting Started
 #### Dependencies
 - Kubernetes
-- [Accelerator-Docker](https://KAIST-NCL/Accelerator-Docker)
+- [Accelerator-Docker](https://github.com/KAIST-NCL/Accelerator-Docker)
 
 
 #### Installing
