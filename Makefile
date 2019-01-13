@@ -2,7 +2,7 @@
 
 
 OUT_DIR := out
-BIN_NAME := fpga-k8s
+BIN_NAME := acc-k8s
 
 TMP_GO_ABS := $(CURDIR)/vendor
 ENV_GOPATH := env GOPATH=$(TMP_GO_ABS)

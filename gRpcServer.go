@@ -77,7 +77,7 @@ func initializeFpgaDevicePlugins(m *FpgaManager) []*FpgaDevicePlugin {
 func initializeFpgaDevicePlugin(dType string, devices []*pb.Device) *FpgaDevicePlugin {
 	devs := convertDeviceVar(dType,devices)
 	return &FpgaDevicePlugin{
-		resName: "fpga.k8s/"+strings.Trim(strings.ToLower(dType)," "),
+		resName: "acc.k8s/"+strings.Trim(strings.ToLower(dType)," "),
 		devs:	devs,
 		socket:	getSocketAddr(dType),
 

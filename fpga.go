@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	USR_LIST_DEFAULT = "/etc/fpga-docker/device.pbtxt"
-	STAT_LIST_DEFAULT = "/etc/fpga-docker/stat.pb"
-	fpgaManagerName = "fpga-manager"
+	USR_LIST_DEFAULT = "/etc/accelerator-docker/device.pbtxt"
+	STAT_LIST_DEFAULT = "/etc/accelerator-docker/stat.pb"
+	accManagerName = "acc-manager"
 )
 
 type FpgaManager struct {
@@ -31,14 +31,14 @@ type FpgaManager struct {
 }
 
 func initializeFpgaManager() (*FpgaManager,error){
-	//TODO : fetch list files from FPGA-Manager
-	/*fpgaManagerPath, err := exec.LookPath(fpgaManagerName)
+	//TODO : fetch list files from ACC-Manager
+	/*accManagerPath, err := exec.LookPath(accManagerName)
 	if err != nil {
-		log.Println("No "+fpgaManagerName+" found\nFirst install FPGA-Docker")
+		log.Println("No "+accManagerName+" found\nFirst install Accelerator-Docker")
 	}
-	listPaths, err := exec.Command(fpgaManagerPath,"paths").Output()
+	listPaths, err := exec.Command(accManagerPath,"paths").Output()
 	if err != nil {
-		log.Println("Cannot execute "+fpgaManagerName)
+		log.Println("Cannot execute "+accManagerName)
 	}
 	fmt.Println(string(listPaths))*/
 
