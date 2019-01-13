@@ -11,10 +11,7 @@ Accelerator-K8S is a device plugin works with [Accelerator-Docker](https://githu
 #### Installing
 Install using YAML --not supported yet
 
-
-Install dependencies for build
-```
-Now, clone this repository and make it.
+Clone this repository and make it.
 ```bash
 $ git clone https://github.com/KAIST-NCL/Accelerator-K8S.git
 $ cd Accelerator-K8S
