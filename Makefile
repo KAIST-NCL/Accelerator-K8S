@@ -19,3 +19,5 @@ install:
 
 clean:
 	rm -rf $(OUT_DIR)
+	rm ./device_proto/device.pb.go
+
