@@ -73,6 +73,7 @@ func initializeAccManager() (*AccManager,error){
 		log.Println("Cannot watch ["+tmp_user_list_path+"] : "+err.Error())
 		return nil, err
 	}
+	//TODO: fix -> when status file not exists(no container ran after installation), it returns error
 	if err := tmpHealthWatcher.Add(tmp_stat_list_path); err != nil {
 		log.Println("Cannot watch ["+tmp_stat_list_path+"] : "+err.Error())
 		return nil, err
