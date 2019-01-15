@@ -27,13 +27,13 @@ $ out/acc-k8s
 ```
 for every node
 
-### How to Use
-#### Prerequisites
+## How to Use
+### Prerequisites
 First, you need to make sure that you installed [Accelerator-Docker](https://github.com/KAIST-NCL/Accelerator-Docker) properly.
 
 `default-runtime` of docker daemon should be set to `acc-runtime`. Check `/etc/docker/daemon.json`
 
-#### Enabling Accelerators in Containers
+### Enabling Accelerators in Containers
 You can require your accelerators as a resource like below:
 ```yaml
 apiVersion: v1
