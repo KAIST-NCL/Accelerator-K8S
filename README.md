@@ -9,22 +9,23 @@ Accelerator-K8S is a device plugin works with [Accelerator-Docker](https://githu
 
 
 #### Installing
-Install using YAML --not supported yet
+Deploy as a daemonset **(Recommended)**
+```bash
+kubectl create -f https://raw.githubusercontent.com/KAIST-NCL/Accelerator-K8S/master/acc-k8s.yml
+```
 
-Clone this repository and make it.
+OR
+
+Install manually by cloning and building
 ```bash
 $ git clone https://github.com/KAIST-NCL/Accelerator-K8S.git
 $ cd Accelerator-K8S
 $ make
 $ sudo make install
-```
 
-## How to run Accelerator-K8S
-It is a simple daemon, so you can just run it like
-```bash
 $ out/acc-k8s
 ```
-or make it as a daemon set of kubernetes (will be supported soon)
+for every node
 
 ## Authors
 #### KAIST NCL
