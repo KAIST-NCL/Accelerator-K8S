@@ -32,7 +32,7 @@ for every node
 First, you need to make sure that you installed [Accelerator-Docker](https://github.com/KAIST-NCL/Accelerator-Docker) properly.
 
 * `default-runtime` of docker daemon should be set to `acc-runtime`. Check `/etc/docker/daemon.json`
-* In Accelerator-Docker setting(/etc/accelerator-docker/devices.pbtxt), **accelerator type** should be named following
+* In Accelerator-Docker setting(/etc/accelerator-docker/device.pbtxt), **accelerator type** should be named following
 kubernetes resourece naming rule. Refer to [this](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/).
 
 ### Enabling Accelerators in Containers
