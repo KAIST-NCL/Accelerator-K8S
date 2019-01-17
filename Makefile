@@ -10,7 +10,7 @@ ENV_GOPATH := env GOPATH=$(TMP_GO_ABS)
 SOURCES := $(shell find . 2>&1 | grep -E '.*\.(c|h|go)$$')
 
 all: $(SOURCES)
-	go get -u github.com/golang/protobuf/protoc-gen-go
+	go get github.com/golang/protobuf/protoc-gen-go
 	protoc --go_out=. ./device_proto/device.proto
 	$(ENV_GOPATH) go get -d -v ./...
 	find . -path '*/vendor' | xargs -IX rm -rf X
