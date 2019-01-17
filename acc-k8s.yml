@@ -15,7 +15,7 @@ spec:
       - key: CriticalAddonsOnly
         operator: Exists
       containers:
-      - image: kaistncl/accelerator-k8s:0.2
+      - image: kaistncl/accelerator-k8s:latest
         name: acc-k8s-device-plugin-ctr
         securityContext:
           allowPrivilegeEscalation: false
