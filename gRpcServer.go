@@ -29,19 +29,18 @@ func dial(sockPath string, timeout time.Duration) (*grpc.ClientConn, error){
 	return conn,nil
 }
 
-func convertDeviceVar(dType string, devices []*pb.Device) []*k8sPluginApi.Device {
+func convertDeviceVar(devices []*pb.Device) []*k8sPluginApi.Device {
 	devs := []*k8sPluginApi.Device{}
 	if devices == nil {
 		return nil
 	}
-	for _, elem := range devices{
+	for _, dev := range devices{
 		statusTmp := k8sPluginApi.Healthy
-		if *elem.Status == pb.Device_USED{
+		if *dev.Status == pb.Device_USED{
 			statusTmp = k8sPluginApi.Unhealthy
 		}
 		dev := &k8sPluginApi.Device{
-			//ID: dType+"_"+string(i),
-			ID: dType,
+			ID: dev.GetId(),
 			Health: statusTmp,
 		}
 		devs = append(devs,dev)
@@ -60,26 +59,26 @@ type AccDevicePlugin struct {
 	server *grpc.Server
 }
 
-func getSocketAddr(dType string) string {
-	return path.Join(k8sPluginApi.DevicePluginPath,dType)+".sock"
+func getSocketAddr(devType string) string {
+	return path.Join(k8sPluginApi.DevicePluginPath,strings.Replace(devType,"/","_",-1))+".sock"
 }
 
 func initializeAccDevicePlugins(m *AccManager) []*AccDevicePlugin {
 	plugins := []*AccDevicePlugin{}
-	devices := m.getDevices()
-	for key,val := range devices{
-		plugins = append(plugins,initializeAccDevicePlugin(key,val))
+	accs := m.getAccelerators()
+	for _, acc := range accs{
+		plugins = append(plugins,initializeAccDevicePlugin(acc))
 	}
 
 	return plugins
 }
 
-func initializeAccDevicePlugin(dType string, devices []*pb.Device) *AccDevicePlugin {
-	devs := convertDeviceVar(dType,devices)
+func initializeAccDevicePlugin(acc *pb.Accelerator) *AccDevicePlugin {
+	devs := convertDeviceVar(acc.GetDevices().GetDevices())
 	return &AccDevicePlugin{
-		resName: "acc.k8s/"+strings.Trim(strings.ToLower(dType)," "),
+		resName: acc.GetType(),
 		devs:	devs,
-		socket:	getSocketAddr(dType),
+		socket:	getSocketAddr(acc.GetType()),
 
 		stop:	make(chan interface{}),
 		health:	make(chan []*k8sPluginApi.Device),
@@ -187,13 +186,12 @@ func (dp *AccDevicePlugin) ListAndWatch(e *k8sPluginApi.Empty, s k8sPluginApi.De
 
 func (dp *AccDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.AllocateRequest) (*k8sPluginApi.AllocateResponse,error){
 	devs := dp.devs
-	resps := k8sPluginApi.AllocateResponse{}
+	resps := new(k8sPluginApi.AllocateResponse)
 	for _, req := range reqs.ContainerRequests {
-		resp := k8sPluginApi.ContainerAllocateResponse{
-			Envs: map[string]string{
-				"ACC_VISIBLE_DEVICES": strings.Join(req.DevicesIDs,","),
-			},
-		}
+		log.Println("Allocate ["+strings.Join(req.DevicesIDs,",")+"]")
+		resp := new(k8sPluginApi.ContainerAllocateResponse)
+		resp.Envs = make(map[string]string)
+		resp.Envs["ACC_VISIBLE_DEVICES"] = strings.Join(req.DevicesIDs,",")
 
 		for _,id := range req.DevicesIDs {
 			res := false
@@ -207,9 +205,9 @@ func (dp *AccDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.Alloca
 				return nil, fmt.Errorf("unknown device : %s",id)
 			}
 		}
-		resps.ContainerResponses = append(resps.ContainerResponses,&resp)
+		resps.ContainerResponses = append(resps.ContainerResponses,resp)
 	}
-	return &resps,nil
+	return resps,nil
 }
 
 func (dp *AccDevicePlugin) PreStartContainer(c context.Context, req *k8sPluginApi.PreStartContainerRequest) (*k8sPluginApi.PreStartContainerResponse, error){
