@@ -48,12 +48,33 @@ spec:
       image: ubuntu:16.04
       resources:
         limits:
-          acc.k8s/{DEVICE_NAME}: 1
+          {ACCELERATOR_TYPE}: 1
 ```
-All alphabets of device name should be lower case, even if it is not set as lower case in Accelerator-Docker configuration.
+'Accelerator type' is configured in Accelerator-Docker configuration file and you can check it by using `acc-manager list` command
+
+* Example) 
+```bash
+$ acc-manager list
++------------+--------------+------------------------+----------------+----------------+----------+
+|     ID     |     Name     |          Type          |    PCI-Slot    |     Status     |  Holder  |
++------------+--------------+------------------------+----------------+----------------+----------+
+| 234750     | QuadroM2000  | nvidia.com/gpu         | 0000:02:00.0   | Available      | 0        |
+| 1121730    | KCU-1500     | xilinx.fpga/kcu-1500   | 0000:01:00.0   | Available      | 0        |
++------------+--------------+------------------------+----------------+----------------+----------+
+```
+If you want to use KCU-1500 for your pod, you can set container limit as follows.
+```yaml
+  containers:
+    - name: demo-container
+      image: ubuntu:16.04
+      resources:
+        limits:
+          xilinx.fpga/kcu-1500: 1
+```
 
 ## Authors
 #### KAIST NCL
 * [Sunghyun Kim](https://github.com/cqbqdd11519)
 
 ## License
+This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0), see [LICENSE](LICENSE) for more information.
