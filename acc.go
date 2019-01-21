@@ -114,7 +114,7 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 
 	accs := []*pb.Accelerator{}
 	for _, acc := range usrList.GetAccelerators(){
-		for _, dev := range acc.GetDevices().GetDevices(){
+		for _, dev := range acc.GetDevices(){
 			devId := generateDeviceId(dev)
 			dev.Id = proto.String(devId)
 			tmpStatus := pb.Device_IDLE

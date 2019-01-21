@@ -74,7 +74,7 @@ func initializeAccDevicePlugins(m *AccManager) []*AccDevicePlugin {
 }
 
 func initializeAccDevicePlugin(acc *pb.Accelerator) *AccDevicePlugin {
-	devs := convertDeviceVar(acc.GetDevices().GetDevices())
+	devs := convertDeviceVar(acc.GetDevices())
 	return &AccDevicePlugin{
 		resName: acc.GetType(),
 		devs:	devs,
