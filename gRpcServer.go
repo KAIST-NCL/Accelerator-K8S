@@ -36,7 +36,7 @@ func convertDeviceVar(devices []*pb.Device) []*k8sPluginApi.Device {
 	}
 	for _, dev := range devices{
 		statusTmp := k8sPluginApi.Healthy
-		if *dev.Status == pb.Device_USED{
+		if *dev.Status != pb.Device_IDLE{
 			statusTmp = k8sPluginApi.Unhealthy
 		}
 		dev := &k8sPluginApi.Device{
@@ -74,7 +74,7 @@ func initializeAccDevicePlugins(m *AccManager) []*AccDevicePlugin {
 }
 
 func initializeAccDevicePlugin(acc *pb.Accelerator) *AccDevicePlugin {
-	devs := convertDeviceVar(acc.GetDevices())
+	devs := convertDeviceVar(acc.Devices)
 	return &AccDevicePlugin{
 		resName: acc.GetType(),
 		devs:	devs,

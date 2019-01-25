@@ -11,6 +11,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 	"os/signal"
 	"syscall"
+	"strconv"
 )
 
 const (
@@ -113,22 +114,21 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 	}
 
 	accs := []*pb.Accelerator{}
-	for _, acc := range usrList.GetAccelerators(){
-		for _, dev := range acc.GetDevices(){
+	for _, acc := range usrList.Accelerators{
+		for _, dev := range acc.Devices{
 			devId := generateDeviceId(dev)
 			dev.Id = proto.String(devId)
 			tmpStatus := pb.Device_IDLE
 			dev.Status = &tmpStatus
 			dev.Pid = proto.Int32(0)
-			for _, devStat := range statList.GetDevices(){
+			for _, devStat := range statList.Devices{
 				if devId == devStat.GetId(){
-					if _,err := os.Stat(path.Join("/proc",string(devStat.GetPid()))); os.IsNotExist(err) {
+					dev.Status = devStat.Status
+					dev.Pid = proto.Int32(devStat.GetPid())
+					if _,err := os.Stat(path.Join("/proc",strconv.Itoa(int(devStat.GetPid())))); os.IsNotExist(err) {
 						tmpStatus := pb.Device_IDLE
 						dev.Status = &tmpStatus
 						dev.Pid = proto.Int32(0)
-					}else{
-						dev.Status = devStat.Status
-						dev.Pid = proto.Int32(devStat.GetPid())
 					}
 					break
 				}
