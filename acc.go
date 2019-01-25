@@ -6,12 +6,10 @@ import (
 	pb "./device_proto"
 	k8sPluginApi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1beta1"
 	"os"
-	"path"
 	"log"
 	"github.com/fsnotify/fsnotify"
 	"os/signal"
 	"syscall"
-	"strconv"
 )
 
 const (
@@ -125,11 +123,13 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 				if devId == devStat.GetId(){
 					dev.Status = devStat.Status
 					dev.Pid = proto.Int32(devStat.GetPid())
-					if _,err := os.Stat(path.Join("/proc",strconv.Itoa(int(devStat.GetPid())))); os.IsNotExist(err) {
+					// Fix me : We should trust status protobuf
+					//          as we cannot check other processes' status from inside container
+					/*if _,err := os.Stat(path.Join("/proc",strconv.Itoa(int(devStat.GetPid())))); os.IsNotExist(err) {
 						tmpStatus := pb.Device_IDLE
 						dev.Status = &tmpStatus
 						dev.Pid = proto.Int32(0)
-					}
+					}*/
 					break
 				}
 			}
