@@ -42,6 +42,12 @@ func main(){
 		case <-manager.restartChan:
 			log.Println("Restarting device plugins")
 			restart = true
+		// Accelerator health watch
+		case e := <-manager.healthWatcher.Events:
+			if (e.Name == USR_LIST_DEFAULT || e.Name == STAT_LIST_DEFAULT) && (e.Op&fsnotify.Create == fsnotify.Create || e.Op&fsnotify.Write == fsnotify.Write) {
+				restart = true
+			}
+		// Device Plugin path (/var/lib/kubelet/device-plugins) watch
 		case e := <-manager.dpWatcher.Events:
 			if e.Name == k8sPluginApi.KubeletSocket && e.Op&fsnotify.Create == fsnotify.Create{
 				restart = true
