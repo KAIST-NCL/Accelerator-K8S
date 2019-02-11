@@ -77,4 +77,4 @@ If you want to use KCU-1500 for your pod, you can set container limit as follows
 * [Sunghyun Kim](https://github.com/cqbqdd11519)
 
 ## License
-This project is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0), see [LICENSE](LICENSE) for more information.
+This project is released under the [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause), see [LICENSE](LICENSE) for more information.
