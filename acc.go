@@ -114,13 +114,12 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 	accs := []*pb.Accelerator{}
 	for _, acc := range usrList.Accelerators{
 		for _, dev := range acc.Devices{
-			devId := generateDeviceId(dev)
-			dev.Id = proto.String(devId)
 			tmpStatus := pb.Device_IDLE
 			dev.Status = &tmpStatus
 			dev.Pid = proto.Int32(0)
 			for _, devStat := range statList.Devices{
-				if devId == devStat.GetId(){
+				if dev.GetName() == devStat.GetName(){
+					dev.Id = devStat.Id
 					dev.Status = devStat.Status
 					dev.Pid = proto.Int32(devStat.GetPid())
 					// Fix me : We should trust status protobuf
