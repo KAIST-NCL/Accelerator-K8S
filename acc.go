@@ -111,7 +111,7 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 		log.Println("cannot parse ["+ usrListPath +"] : "+err.Error())
 	}
 
-	accs := []*pb.Accelerator{}
+	accByTypes := make(map[string]*pb.Accelerator)
 	for _, acc := range usrList.Accelerators{
 		for _, dev := range acc.Devices{
 			tmpStatus := pb.Device_IDLE
@@ -133,7 +133,15 @@ func (m *AccManager) getAccelerators() []*pb.Accelerator{
 				}
 			}
 		}
-		accs = append(accs,acc)
+		if _, ok := accByTypes[acc.GetType()] ; ok {
+			accByTypes[acc.GetType()].Devices = append(accByTypes[acc.GetType()].Devices, acc.Devices...)
+		}else{
+			accByTypes[acc.GetType()] = acc
+		}
+	}
+	accs := []*pb.Accelerator{}
+	for _,v := range accByTypes {
+		accs = append(accs,v)
 	}
 	/*for _, elem := range usrList.GetDevices(){
 		name := strings.Trim(strings.ToLower(*elem.Name)," ")
