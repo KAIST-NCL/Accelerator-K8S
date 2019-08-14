@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	ACC_K8S_DIR_DEFAULT = "/etc/accelerator-docker"
 	USR_LIST_DEFAULT = "/etc/accelerator-docker/device.pbtxt"
 	STAT_LIST_DEFAULT = "/etc/accelerator-docker/stat.pb"
 	accManagerName = "acc-manager"
@@ -40,6 +41,7 @@ func initializeAccManager() (*AccManager,error){
 	}
 	fmt.Println(string(listPaths))*/
 
+	tmp_acc_k8s_dir_path := ACC_K8S_DIR_DEFAULT
 	tmp_user_list_path := USR_LIST_DEFAULT
 	tmp_stat_list_path := STAT_LIST_DEFAULT
 
@@ -67,15 +69,20 @@ func initializeAccManager() (*AccManager,error){
 		return nil, err
 	}
 
+	if err := tmpHealthWatcher.Add(tmp_acc_k8s_dir_path); err != nil {
+		log.Println("Cannot watch ["+tmp_acc_k8s_dir_path+"] : "+err.Error())
+		return nil, err
+	}
+
 	if err := tmpHealthWatcher.Add(tmp_user_list_path); err != nil {
 		log.Println("Cannot watch ["+tmp_user_list_path+"] : "+err.Error())
-		return nil, err
+		//return nil, err
 	}
 
 	os.OpenFile(tmp_stat_list_path, os.O_RDONLY|os.O_CREATE, 0666)
 	if err := tmpHealthWatcher.Add(tmp_stat_list_path); err != nil {
 		log.Println("Cannot watch ["+tmp_stat_list_path+"] : "+err.Error())
-		return nil, err
+		//return nil, err
 	}
 
 	return &AccManager{
