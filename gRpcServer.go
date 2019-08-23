@@ -50,6 +50,7 @@ func convertDeviceVar(devices []*pb.Device) []*k8sPluginApi.Device {
 
 type AccDevicePlugin struct {
 	resName string
+	resNameModified string
 	devs []*k8sPluginApi.Device
 	socket string
 
@@ -77,6 +78,7 @@ func initializeAccDevicePlugin(acc *pb.Accelerator) *AccDevicePlugin {
 	devs := convertDeviceVar(acc.Devices)
 	return &AccDevicePlugin{
 		resName: acc.GetType(),
+		resNameModified: modifyResName(acc.GetType()),
 		devs:	devs,
 		socket:	getSocketAddr(acc.GetType()),
 
@@ -192,6 +194,8 @@ func (dp *AccDevicePlugin) Allocate(c context.Context, reqs *k8sPluginApi.Alloca
 		resp := new(k8sPluginApi.ContainerAllocateResponse)
 		resp.Envs = make(map[string]string)
 		resp.Envs["ACC_VISIBLE_DEVICES"] = strings.Join(req.DevicesIDs,",")
+
+		resp.Envs["ACC_VISIBLE_DEVICES_+"+dp.resNameModified] = strings.Join(req.DevicesIDs,",")
 
 		for _,id := range req.DevicesIDs {
 			res := false
