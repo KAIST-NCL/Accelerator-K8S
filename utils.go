@@ -3,6 +3,7 @@ package main
 import (
 	pb "./device_proto"
 	"fmt"
+	"regexp"
 )
 
 func hashStr(str string) uint32 {
@@ -22,4 +23,10 @@ func generateDeviceId(dev *pb.Device) string{
 		hash += hashStr(path)
 	}
 	return fmt.Sprint(hash)
+}
+
+func modifyResName(resName string) string{
+	var re = regexp.MustCompile(`[./\-]`)
+	replaced := re.ReplaceAllString(resName, `_`)
+	return replaced
 }
