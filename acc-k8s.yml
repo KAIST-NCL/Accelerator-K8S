@@ -1,22 +1,18 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: acc-k8s-device-plugin-daemonset
+  name: acc-k8s
   namespace: kube-system
 spec:
   template:
     metadata:
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ""
       labels:
-        name: acc-k8s-device-plugin-ds
+        name: acc-k8s-ds
     spec:
-      tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
+      priorityClassName: "system-node-critical"
       containers:
       - image: kaistncl/accelerator-k8s:latest
-        name: acc-k8s-device-plugin-ctr
+        name: acc-k8s-ctr
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
