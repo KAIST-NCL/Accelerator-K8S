@@ -78,3 +78,6 @@ If you want to use KCU-1500 for your pod, you can set container limit as follows
 
 ## License
 This project is released under the [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause), see [LICENSE](LICENSE) for more information.
+
+## Acknowledgement
+This work was supported by 'The Cross-Ministry Giga KOREA Project' grant funded by the Korea government (MSIT) (No.GK19P0400, Development of Mobile Edge Computing Platform Technology for URLLC Services)
